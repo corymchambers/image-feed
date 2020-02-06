@@ -1,27 +1,27 @@
 import React from 'react'
-import { StyleSheet, Text, View } from 'react-native'
+import { StyleSheet, Platform, View } from 'react-native'
 import Constants from 'expo-constants'
 
-import AuthorRow from './components/AuthorRow'
+import Feed from './screens/Feed'
 
 export default function App() {
   return (
     <View style={styles.container}>
-      <AuthorRow
-        fullname={'First Last'}
-        linkText={'Comments'}
-        onPressLinkText={() => {
-            console.log('pressed')
-        }}
-    />
+      <Feed style={styles.feed} />
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    marginTop: Constants.statusBarHeight,
-    flex: 1,
-    backgroundColor: '#fff',
-  },
+    container: {
+        flex: 1,
+        backgroundColor: '#fff',
+    },
+    feed: {
+        flex: 1,
+        marginTop:
+            Platform.OS === 'android' || Platform.version < 11
+                ? Constants.statusBarHeight
+                : 0
+  }
 });
