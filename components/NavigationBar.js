@@ -18,7 +18,7 @@ export default function NavigationBar({ title, leftText, onPressLeftText }) {
 NavigationBar.propTypes = {
     title: PropTypes.string,
     leftText: PropTypes.string,
-    onPressLeftText: PropTypes.fucn
+    onPressLeftText: PropTypes.func
 }
 
 NavigationBar.defaultProps = {

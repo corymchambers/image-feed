@@ -1,15 +1,35 @@
 import React, { Component } from 'react'
-import { StyleSheet, Platform, View, Modal } from 'react-native'
+import { StyleSheet, Platform, View, Modal, AsyncStorage } from 'react-native'
 import Constants from 'expo-constants'
 
 import Feed from './screens/Feed'
 import Comments from './screens/Comments'
 
+const ASYNC_STORAGE_COMMENTS_KEY = 'ASYNC_STORAGE_COMMENTS_KEY'
+
 export default class App extends Component {
+
     state = {
         commentsForItem: {},
         showModal: false,
         selectedItemId: null
+    }
+
+    async componentDidMount() {
+        try {
+            const commentsForItem = await AsyncStorage.getItem(
+                ASYNC_STORAGE_COMMENTS_KEY
+            )
+
+            this.setState({
+                commentsForItem: commentsForItem
+                    ? JSON.parse(commentsForItem)
+                    : {}
+            })
+        }
+         catch (e) {
+             console.log('Failed to load comments')
+         }
     }
 
     openCommentScreen = id => {
@@ -26,7 +46,7 @@ export default class App extends Component {
         })
     }
 
-    onSubmitComment = (text) => {
+    onSubmitComment = async (text) => {
         const { selectedItemId, commentsForItem } = this.state
         const comments = commentsForItem[selectedItemId] || []
 
@@ -36,6 +56,20 @@ export default class App extends Component {
         }
 
         this.setState({ commentsForItem: updated })
+
+        try {
+            await AsyncStorage.setItem(
+                ASYNC_STORAGE_COMMENTS_KEY,
+                JSON.stringify(updated)
+            )
+        } catch (e) {
+            console.log(
+                'Failed to save comment',
+                text,
+                'for',
+                selectedItemId
+            )
+        }
     }
 
     render() {
